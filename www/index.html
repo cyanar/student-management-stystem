@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <style type="text/css">
+        #pagenav li{
+            cursor:pointer;
+        }
+        .nav_right,.nav_middle{
+            line-height: 70px;
+        }
+        table th{
+            cursor:pointer;
+        }
+        .pencil{
+            border:1px solid #333;
+            padding:2px;
+            border-radius:3px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">学生管理系统</a>
+    </div>
+</nav>
+<div class="container">
+      <div class="row">
+        <div class="filterbox col-xs-4" style="margin-bottom:10px;">
+            筛选：
+          <input type="text" id="filter-text" class="form-control">
+        </div>
+        <div class = "col-xs-8 text-right" >
+         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+              增加学生
+           </button>
+        </div>
+      </div>
+
+        <table class="table table-striped" id="datatable">
+            <thead>
+                <tr>
+                    <th>
+                        <input type = "checkbox">
+                    </th>
+                    <th data-title = "id">id</th>
+                    <th data-title = "name">姓名</th>
+                    <th data-title = "sex">性别</th>
+                    <th data-title = "yuwen">语文</th>
+                    <th data-title = "shuxue">数学</th>
+                    <th data-title = "yingyu">英语</th>
+                    <th data-title = "zongfen">总分</th>
+                    <th data-title = "dizhi">住址</th>
+                    <th>删除</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+            <div class="box">
+            <button id="delmanybtn" class = "btn btn-danger">批量删除</button>
+        </div>
+        <nav id="pagenav">
+          <div class="row">
+             <div class="col-md-5">
+                  <ul class="pagination">
+                  </ul>
+             </div>
+             <div class="col-md-3 nav_middle" >
+                  设置每页的条数:
+                  <select id = "pagesize_sele">
+                     <option value="5">5</option>
+                     <option value="10">10</option>
+                     <option value="50">50</option>
+                     <option value="100">100</option>
+                     <option value="200">200</option>
+                     <option value="500">500</option>
+                     <option value="1000">1000</option>
+                  </select>
+             </div>
+            <div class = "col-md-4 nav_right" >
+                共 <span id = "nav_span1"></span>条数据
+                每页 <span id = "nav_span2"></span>条数据
+                共  <span id = "nav_span3"></span>页
+            </div>
+          </div>
+
+        </nav>
+    </div>
+
+
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">增加学生</h4>
+      </div>
+      <div class="modal-body">
+          <p>id: <input type="text" name = "idTxt" class= "form-control" /></p>
+          <p>姓名: <input type="text" name = "nameTxt" class= "form-control" /></p>
+          <p>性别:
+              <label><input name="sexRad" type="radio" value="男">男</label>
+              <label><input name="sexRad" type="radio" value="女">女</label>
+          </p>
+          <p>语文: <input type="text" name = "yuwenTxt" class= "form-control" /></p>
+          <p>数学: <input type="text" name = "shuxueTxt" class= "form-control" /></p>
+          <p>英语: <input type="text" name = "yingyuTxt" class= "form-control" /></p>
+          <p>地址: <input type="text" name = "dizhiTxt" class= "form-control" /></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id="addBtn">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="assets/js/jquery.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<script src="js/dataTable.js"></script>
+<script src="js/pageNav.js"></script>
+<script >
+    var dataTable = new dataTable();
+</script>
+<script>
+  $("#addBtn").click(function(){
+      $.ajax({
+          "url":"/students",
+          "type":"PATCH",
+          "data":{
+             "id":$("input[name=idTxt]").val(),
+             "name":$("input[name=nameTxt]").val(),
+             "sex":$("input[name=sexRad]:checked").val(),
+             "yuwen":$("input[name=yuwenTxt]").val(),
+             "shuxue":$("input[name=shuxueTxt]").val(),
+             "yingyu":$("input[name=yingyuTxt]").val(),
+             "dizhi":$("input[name=dizhiTxt]").val()
+          },
+          "success":function(){
+              alert("增加成功");
+             $('#myModal').modal('hide');
+             dataTable.fetchData();
+          }
+      })
+  })
+</script>
+</html>
